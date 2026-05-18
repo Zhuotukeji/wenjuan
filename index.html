@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI 工作流课前问卷</title>
+    <meta name="description" content="面向综合部与商务团队的 AI 工作流实战课前调研" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero-band" id="formView" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">AI 工作流实战课 · 课前调研</p>
+          <h1 id="page-title">把一个真实工作任务带进课堂</h1>
+          <p>
+            请填写一个具体、常见、可脱敏的工作任务。回收结果会用于筛选课堂案例，帮助大家把日常工作拆成 AI 工作流。
+          </p>
+        </div>
+        <div class="workflow-strip" aria-label="问卷关注的工作流结构">
+          <span><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>输入</span>
+          <span><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5Z" /><path d="m2 17 10 5 10-5" /><path d="m2 12 10 5 10-5" /></svg>处理</span>
+          <span><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.5L19 10l-5.2 1.5L12 17l-1.8-5.5L5 10l5.2-1.5L12 3Z" /></svg>输出</span>
+          <span><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z" /><path d="m9 12 2 2 4-5" /></svg>检查</span>
+        </div>
+      </section>
+
+      <div class="content-grid" id="surveyShell">
+        <aside class="side-panel" aria-label="填写进度和摘要">
+          <div class="meter-block">
+            <div class="meter-label">
+              <span>完整度</span>
+              <strong id="completenessText">0%</strong>
+            </div>
+            <div class="meter" aria-hidden="true">
+              <span id="completenessBar"></span>
+            </div>
+          </div>
+          <div class="potential">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 14l4-4" />
+              <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+            </svg>
+            <div>
+              <strong id="potentialLabel">先把任务说具体</strong>
+              <span id="potentialScore">工作流潜力 0%</span>
+            </div>
+          </div>
+          <ol class="step-list" id="stepList">
+            <li class="active"><span>1</span><div><strong>个人背景</strong><small>确认岗位和 AI 使用基础</small></div></li>
+            <li><span>2</span><div><strong>真实任务</strong><small>把一个高频工作说清楚</small></div></li>
+            <li><span>3</span><div><strong>材料输出</strong><small>找到输入、标准和样例</small></div></li>
+            <li><span>4</span><div><strong>系统雏形</strong><small>圈出 AI 步骤和人工检查点</small></div></li>
+          </ol>
+          <div class="mini-summary">
+            <strong>课堂案例线索</strong>
+            <p id="caseHint">填写真实任务后，这里会逐步形成讲师筛选案例的线索。</p>
+          </div>
+        </aside>
+
+        <form class="form-panel" id="surveyForm">
+          <div class="form-head">
+            <span id="stepCounter">第 1 部分 / 共 4 部分</span>
+            <h2 id="stepTitle">个人背景</h2>
+            <p id="stepNote">确认岗位和 AI 使用基础</p>
+          </div>
+
+          <section class="step-section active" data-step-section="0">
+            <div class="question-stack">
+              <div class="grid two">
+                <label class="field">
+                  <span>姓名<em>*</em></span>
+                  <input data-field="name" placeholder="例如：王明" />
+                </label>
+                <label class="field">
+                  <span>岗位<em>*</em></span>
+                  <input data-field="role" placeholder="例如：商务经理 / 行政专员" />
+                </label>
+              </div>
+              <fieldset class="choice-group" data-choice-group="department">
+                <legend>所在部门<em>*</em></legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="综合部">综合部</button>
+                  <button type="button" data-choice="商务部">商务部</button>
+                  <button type="button" data-choice="销售支持">销售支持</button>
+                  <button type="button" data-choice="行政/人事">行政/人事</button>
+                  <button type="button" data-choice="财务协同">财务协同</button>
+                  <button type="button" data-choice="其他">其他</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>联系方式</span>
+                <input data-field="contact" placeholder="手机、邮箱或企业微信，选填" />
+              </label>
+              <fieldset class="choice-group" data-choice-group="aiUsageLevel">
+                <legend>你现在使用 AI 的程度<em>*</em></legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="几乎没用过">几乎没用过</button>
+                  <button type="button" data-choice="偶尔问答">偶尔问答</button>
+                  <button type="button" data-choice="经常写材料">经常写材料</button>
+                  <button type="button" data-choice="已经在尝试流程化">已经在尝试流程化</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>你现在最常用 AI 做什么</span>
+                <textarea data-field="aiCurrentUse" rows="4" placeholder="例如：写通知、润色邮件、查资料、做摘要。"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="step-section" data-step-section="1">
+            <div class="question-stack">
+              <label class="field">
+                <span>你最想用 AI 改造的一个具体工作任务<em>*</em></span>
+                <input data-field="taskTitle" placeholder="例如：客户拜访后整理纪要并生成跟进话术" />
+              </label>
+              <label class="field">
+                <span>请描述这个任务现在通常怎么做<em>*</em></span>
+                <textarea data-field="taskDescription" rows="5" placeholder="写清楚触发场景、你会收集什么信息、最后交给谁、最麻烦的环节在哪里。"></textarea>
+              </label>
+              <div class="grid two">
+                <fieldset class="choice-group" data-choice-group="taskFrequency">
+                  <legend>这个任务多久发生一次<em>*</em></legend>
+                  <div class="choice-grid">
+                    <button type="button" data-choice="每天">每天</button>
+                    <button type="button" data-choice="每周">每周</button>
+                    <button type="button" data-choice="每月">每月</button>
+                    <button type="button" data-choice="不定期但重要">不定期但重要</button>
+                  </div>
+                </fieldset>
+                <fieldset class="choice-group" data-choice-group="currentTimeCost">
+                  <legend>通常耗时</legend>
+                  <div class="choice-grid">
+                    <button type="button" data-choice="15分钟以内">15分钟以内</button>
+                    <button type="button" data-choice="15-30分钟">15-30分钟</button>
+                    <button type="button" data-choice="30-60分钟">30-60分钟</button>
+                    <button type="button" data-choice="1-2小时">1-2小时</button>
+                    <button type="button" data-choice="2小时以上">2小时以上</button>
+                  </div>
+                </fieldset>
+              </div>
+              <fieldset class="choice-group" data-choice-group="taskCategory">
+                <legend>你觉得它更像哪一类任务</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="整理型">整理型</button>
+                  <button type="button" data-choice="生成型">生成型</button>
+                  <button type="button" data-choice="转换型">转换型</button>
+                  <button type="button" data-choice="检查型">检查型</button>
+                  <button type="button" data-choice="辅助判断型">辅助判断型</button>
+                  <button type="button" data-choice="不确定">不确定</button>
+                </div>
+              </fieldset>
+              <fieldset class="choice-group" data-choice-group="painPoints" data-multi="true">
+                <legend>这个任务最让你头疼的地方</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="材料太散">材料太散</button>
+                  <button type="button" data-choice="提炼重点慢">提炼重点慢</button>
+                  <button type="button" data-choice="格式反复改">格式反复改</button>
+                  <button type="button" data-choice="语气不好把握">语气不好把握</button>
+                  <button type="button" data-choice="容易遗漏事项">容易遗漏事项</button>
+                  <button type="button" data-choice="需要反复汇报">需要反复汇报</button>
+                  <button type="button" data-choice="不同人标准不一">不同人标准不一</button>
+                  <button type="button" data-choice="每次都从头做">每次都从头做</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>其他痛点</span>
+                <input data-field="painPointOther" placeholder="选项没有覆盖的话，可以写在这里。" />
+              </label>
+            </div>
+          </section>
+
+          <section class="step-section" data-step-section="2">
+            <div class="question-stack">
+              <fieldset class="choice-group" data-choice-group="inputMaterials" data-multi="true">
+                <legend>每次做这个任务，需要哪些输入材料<em>*</em></legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="会议记录/录音转写">会议记录/录音转写</button>
+                  <button type="button" data-choice="客户沟通记录">客户沟通记录</button>
+                  <button type="button" data-choice="制度/流程文件">制度/流程文件</button>
+                  <button type="button" data-choice="历史邮件/通知">历史邮件/通知</button>
+                  <button type="button" data-choice="产品或服务资料">产品或服务资料</button>
+                  <button type="button" data-choice="表格数据">表格数据</button>
+                  <button type="button" data-choice="历史方案/报告">历史方案/报告</button>
+                  <button type="button" data-choice="工作群聊天记录">工作群聊天记录</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>可带到课堂的脱敏材料</span>
+                <textarea data-field="materialSample" rows="5" placeholder="可以粘贴一小段脱敏样例，也可以说明你会带什么材料。不要填真实客户名、手机号、金额、合同细节。"></textarea>
+              </label>
+              <fieldset class="choice-group" data-choice-group="outputTypes" data-multi="true">
+                <legend>你希望最后产出什么<em>*</em></legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="会议纪要">会议纪要</button>
+                  <button type="button" data-choice="邮件/微信话术">邮件/微信话术</button>
+                  <button type="button" data-choice="通知公告">通知公告</button>
+                  <button type="button" data-choice="表格/清单">表格/清单</button>
+                  <button type="button" data-choice="方案大纲">方案大纲</button>
+                  <button type="button" data-choice="汇报摘要">汇报摘要</button>
+                  <button type="button" data-choice="FAQ问答">FAQ问答</button>
+                  <button type="button" data-choice="检查意见">检查意见</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>这个输出主要给谁看</span>
+                <input data-field="outputAudience" placeholder="例如：领导、客户、部门同事、供应商、候选人。" />
+              </label>
+              <label class="field">
+                <span>你认为一份好结果的标准是什么</span>
+                <textarea data-field="outputStandard" rows="5" placeholder="例如：结论清楚、责任人和截止时间完整、语气专业但不强推、不能出现未经确认的承诺。"></textarea>
+              </label>
+              <fieldset class="choice-group" data-choice-group="idealSampleAvailable">
+                <legend>是否可以提供一份理想输出样例</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="可以带脱敏样例">可以带脱敏样例</button>
+                  <button type="button" data-choice="只有原始材料">只有原始材料</button>
+                  <button type="button" data-choice="暂时没有样例">暂时没有样例</button>
+                </div>
+              </fieldset>
+            </div>
+          </section>
+
+          <section class="step-section" data-step-section="3">
+            <div class="question-stack">
+              <fieldset class="choice-group" data-choice-group="aiHelpSteps" data-multi="true">
+                <legend>你希望 AI 在这个流程里帮你做哪些步骤</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="提炼重点">提炼重点</button>
+                  <button type="button" data-choice="分类整理">分类整理</button>
+                  <button type="button" data-choice="生成初稿">生成初稿</button>
+                  <button type="button" data-choice="改写润色">改写润色</button>
+                  <button type="button" data-choice="形成表格">形成表格</button>
+                  <button type="button" data-choice="检查遗漏">检查遗漏</button>
+                  <button type="button" data-choice="生成跟进话术">生成跟进话术</button>
+                  <button type="button" data-choice="输出汇报摘要">输出汇报摘要</button>
+                </div>
+              </fieldset>
+              <fieldset class="choice-group" data-choice-group="humanCheckItems" data-multi="true">
+                <legend>哪些内容必须由人最后确认</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="金额/价格">金额/价格</button>
+                  <button type="button" data-choice="日期/周期">日期/周期</button>
+                  <button type="button" data-choice="客户名称">客户名称</button>
+                  <button type="button" data-choice="责任人">责任人</button>
+                  <button type="button" data-choice="承诺事项">承诺事项</button>
+                  <button type="button" data-choice="合同/制度条款">合同/制度条款</button>
+                  <button type="button" data-choice="个人信息">个人信息</button>
+                  <button type="button" data-choice="领导最终口径">领导最终口径</button>
+                </div>
+              </fieldset>
+              <fieldset class="choice-group" data-choice-group="sensitivityLevel">
+                <legend>材料敏感程度</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="不敏感">不敏感</button>
+                  <button type="button" data-choice="轻度脱敏即可">轻度脱敏即可</button>
+                  <button type="button" data-choice="包含客户/员工信息">包含客户/员工信息</button>
+                  <button type="button" data-choice="包含金额/合同/内部决策">包含金额/合同/内部决策</button>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>你准备如何脱敏</span>
+                <textarea data-field="dataMaskingPlan" rows="4" placeholder="例如：客户名改成客户A，金额改成区间，人名改成负责人A，只保留必要上下文。"></textarea>
+              </label>
+              <div class="grid two">
+                <label class="field">
+                  <span>你希望形成的小系统名称</span>
+                  <input data-field="desiredSystemName" placeholder="例如：客户跟进助手" />
+                </label>
+                <label class="field">
+                  <span>判断它有用的标准</span>
+                  <input data-field="successMetric" placeholder="例如：每次少花30分钟，遗漏明显减少。" />
+                </label>
+              </div>
+              <label class="field">
+                <span>你最希望培训现场解决的一个问题</span>
+                <textarea data-field="questionsForTraining" rows="4" placeholder="可以写具体困惑：AI 总是写得太空、不会按格式输出、不能理解客户语气等。"></textarea>
+              </label>
+              <fieldset class="choice-group" data-choice-group="shareWillingness">
+                <legend>你的案例是否可以在课堂上分享</legend>
+                <div class="choice-grid">
+                  <button type="button" data-choice="愿意作为课堂案例">愿意作为课堂案例</button>
+                  <button type="button" data-choice="可匿名分享">可匿名分享</button>
+                  <button type="button" data-choice="暂不分享">暂不分享</button>
+                </div>
+              </fieldset>
+              <label class="consent">
+                <input type="checkbox" data-field="finalConsent" />
+                <span>
+                  我已确认填写内容经过必要脱敏，未包含客户隐私、个人敏感信息、合同细节或公司未公开决策。
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <p class="error-message" id="errorMessage" hidden></p>
+
+          <div class="button-row">
+            <button type="button" class="secondary-button" id="prevButton">
+              <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+              上一步
+            </button>
+            <button type="button" class="primary-button" id="nextButton">
+              下一步
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+            <button type="submit" class="primary-button" id="submitButton" hidden>
+              提交问卷
+              <svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <section class="result-panel" id="resultView" aria-labelledby="result-title" hidden>
+        <div class="result-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" /></svg>
+        </div>
+        <p class="eyebrow">AI 工作流课前问卷</p>
+        <h1 id="result-title">提交完成</h1>
+        <p class="result-message" id="resultMessage"></p>
+        <dl class="result-meta">
+          <div>
+            <dt>提交编号</dt>
+            <dd id="submissionId"></dd>
+          </div>
+          <div>
+            <dt>收集状态</dt>
+            <dd id="storageStatus"></dd>
+          </div>
+        </dl>
+        <div class="summary-box">
+          <div class="summary-head">
+            <h2>讲师可用摘要</h2>
+            <div class="button-row compact">
+              <button type="button" class="secondary-button" id="copyButton">
+                <svg viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+                复制
+              </button>
+              <button type="button" class="secondary-button" id="downloadButton">
+                <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>
+                下载
+              </button>
+            </div>
+          </div>
+          <pre id="summaryText"></pre>
+        </div>
+        <button type="button" class="text-button" id="restartButton">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 3v6h6" /></svg>
+          填写另一份
+        </button>
+      </section>
+    </main>
+    <script src="/main.js"></script>
+  </body>
+</html>

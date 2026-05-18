@@ -1,0 +1,9 @@
+{
+  "name": "ai-workflow-preclass-survey",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node local-server.mjs",
+    "start": "node local-server.mjs"
+  }
+}

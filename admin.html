@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI 工作流问卷管理后台</title>
+    <meta name="description" content="查看 AI 工作流课前问卷的汇总答案" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell admin-shell">
+      <section class="hero-band admin-hero" aria-labelledby="admin-title">
+        <div>
+          <p class="eyebrow">AI 工作流课前问卷 · 管理后台</p>
+          <h1 id="admin-title">汇总所有真实工作场景</h1>
+          <p>用于课前筛选案例、识别共性痛点，并快速找到最值得课堂深挖的工作流素材。</p>
+        </div>
+        <a class="secondary-button admin-link" href="/">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+          返回问卷
+        </a>
+      </section>
+
+      <section class="admin-toolbar" aria-label="管理筛选工具">
+        <label class="field token-field">
+          <span>管理口令</span>
+          <input id="adminToken" type="password" placeholder="未配置 ADMIN_TOKEN 时可留空" />
+        </label>
+        <label class="field">
+          <span>关键词</span>
+          <input id="searchInput" placeholder="搜索姓名、部门、任务、痛点、摘要" />
+        </label>
+        <label class="field">
+          <span>部门</span>
+          <select id="departmentFilter">
+            <option value="">全部部门</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>任务类型</span>
+          <select id="categoryFilter">
+            <option value="">全部类型</option>
+          </select>
+        </label>
+        <button type="button" class="primary-button" id="refreshButton">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 3v6h6" /></svg>
+          刷新
+        </button>
+      </section>
+
+      <p class="error-message" id="adminError" hidden></p>
+
+      <section class="admin-stats" aria-label="问卷统计">
+        <article>
+          <span>提交总数</span>
+          <strong id="totalCount">0</strong>
+        </article>
+        <article>
+          <span>筛选结果</span>
+          <strong id="filteredCount">0</strong>
+        </article>
+        <article>
+          <span>平均完整度</span>
+          <strong id="avgCompleteness">0%</strong>
+        </article>
+        <article>
+          <span>平均工作流潜力</span>
+          <strong id="avgPotential">0%</strong>
+        </article>
+      </section>
+
+      <section class="admin-actions" aria-label="导出工具">
+        <div>
+          <strong id="sourceLabel">数据源：未加载</strong>
+          <p id="warningLabel"></p>
+        </div>
+        <div class="button-row compact">
+          <button type="button" class="secondary-button" id="copySummariesButton">
+            <svg viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+            复制摘要
+          </button>
+          <button type="button" class="secondary-button" id="downloadCsvButton">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>
+            导出 CSV
+          </button>
+          <button type="button" class="secondary-button" id="downloadJsonButton">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>
+            导出 JSON
+          </button>
+        </div>
+      </section>
+
+      <section class="admin-layout">
+        <aside class="admin-panel">
+          <h2>部门分布</h2>
+          <div id="departmentBreakdown" class="breakdown-list"></div>
+          <h2>高频痛点</h2>
+          <div id="painBreakdown" class="breakdown-list"></div>
+        </aside>
+
+        <section class="submission-list" id="submissionList" aria-label="提交列表">
+          <div class="empty-state">
+            <strong>还没有加载到问卷结果</strong>
+            <p>点击“刷新”读取提交数据。若部署在线上，请确认已配置收集端点或本地存储可用。</p>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="/admin.js"></script>
+  </body>
+</html>
