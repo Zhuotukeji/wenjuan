@@ -23,50 +23,6 @@ function authorize(req) {
   return getRequestToken(req) === expectedToken;
 }
 
-async function readFromWebhook(req) {
-  const webhookUrl =
-    process.env.QUESTIONNAIRE_WEBHOOK_URL ||
-    process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
-    process.env.FORM_WEBHOOK_URL;
-
-  if (!webhookUrl) {
-    return {
-      configured: false,
-      submissions: [],
-      error: ""
-    };
-  }
-
-  const url = new URL(webhookUrl);
-  url.searchParams.set("action", "list");
-
-  const token = getRequestToken(req);
-  if (token) {
-    url.searchParams.set("token", token);
-  }
-
-  try {
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`Webhook list failed with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return {
-      configured: true,
-      submissions: Array.isArray(data.submissions) ? data.submissions : [],
-      error: data.ok === false ? data.message || "Webhook list failed" : ""
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      configured: true,
-      submissions: [],
-      error: error instanceof Error ? error.message : "Webhook list failed"
-    };
-  }
-}
-
 async function getSubmissions(req) {
   if (!authorize(req)) {
     return {
@@ -78,25 +34,15 @@ async function getSubmissions(req) {
     };
   }
 
-  const [localSubmissions, webhookResult] = await Promise.all([
-    readSubmissions().catch((error) => {
-      console.error(error);
-      return [];
-    }),
-    readFromWebhook(req)
-  ]);
-
-  const source = webhookResult.configured && !webhookResult.error ? "webhook" : "local";
-  const submissions = source === "webhook" ? webhookResult.submissions : localSubmissions;
+  const submissions = await readSubmissions();
 
   return {
     status: 200,
     body: {
       ok: true,
-      source,
+      source: "backend",
       count: submissions.length,
-      submissions,
-      warning: webhookResult.error
+      submissions
     }
   };
 }

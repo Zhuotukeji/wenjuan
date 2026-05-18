@@ -21,6 +21,15 @@ function number(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function escapeHtml(value) {
+  return text(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function showAdminError(message) {
   adminError.textContent = message;
   adminError.hidden = false;
@@ -123,7 +132,7 @@ function renderBreakdown(containerId, rows) {
   rows.forEach(([label, count]) => {
     const row = document.createElement("div");
     row.className = "breakdown-row";
-    row.innerHTML = `<span>${label}</span><strong>${count}</strong>`;
+    row.innerHTML = `<span>${escapeHtml(label)}</span><strong>${count}</strong>`;
     container.appendChild(row);
   });
 }
@@ -139,8 +148,6 @@ function renderStats() {
 }
 
 function renderSubmissions() {
-  submissionList.innerHTML = "";
-
   if (!filteredSubmissions.length) {
     submissionList.innerHTML = `
       <div class="empty-state">
@@ -151,42 +158,67 @@ function renderSubmissions() {
     return;
   }
 
-  filteredSubmissions.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "submission-card";
-    card.innerHTML = `
-      <div class="submission-head">
-        <div>
-          <span>${text(item.department)} · ${text(item.role)}</span>
-          <h2>${text(item.taskTitle)}</h2>
-        </div>
-        <div class="score-pair">
-          <strong>${number(item.workflowPotential)}%</strong>
-          <span>工作流潜力</span>
-        </div>
-      </div>
-      <dl class="submission-grid">
-        <div><dt>姓名</dt><dd>${text(item.name)}</dd></div>
-        <div><dt>频率/耗时</dt><dd>${text(item.taskFrequency)} / ${text(item.currentTimeCost)}</dd></div>
-        <div><dt>任务类型</dt><dd>${text(item.taskCategory)}</dd></div>
-        <div><dt>分享意愿</dt><dd>${text(item.shareWillingness)}</dd></div>
-      </dl>
-      <div class="submission-section">
-        <strong>主要痛点</strong>
-        <p>${text(item.painPoints)}${item.painPointOther ? `、${item.painPointOther}` : ""}</p>
-      </div>
-      <div class="submission-section">
-        <strong>输入与输出</strong>
-        <p>输入：${text(item.inputMaterials)}</p>
-        <p>输出：${text(item.outputTypes)}</p>
-      </div>
-      <details>
-        <summary>查看讲师摘要</summary>
-        <pre>${text(item.instructorSummary)}</pre>
-      </details>
-    `;
-    submissionList.appendChild(card);
-  });
+  const rows = filteredSubmissions
+    .map(
+      (item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>
+            <strong>${escapeHtml(item.name)}</strong>
+            <small>${escapeHtml(item.contact)}</small>
+          </td>
+          <td>${escapeHtml(item.department)}</td>
+          <td>${escapeHtml(item.role)}</td>
+          <td class="wide-cell">
+            <strong>${escapeHtml(item.taskTitle)}</strong>
+            <small>${escapeHtml(item.taskDescription)}</small>
+          </td>
+          <td>${escapeHtml(item.taskFrequency)}</td>
+          <td>${escapeHtml(item.currentTimeCost)}</td>
+          <td>${escapeHtml(item.taskCategory)}</td>
+          <td class="wide-cell">${escapeHtml(item.painPoints)}${item.painPointOther ? `、${escapeHtml(item.painPointOther)}` : ""}</td>
+          <td class="wide-cell">${escapeHtml(item.inputMaterials)}</td>
+          <td class="wide-cell">${escapeHtml(item.outputTypes)}</td>
+          <td>${number(item.completeness)}%</td>
+          <td>${number(item.workflowPotential)}%</td>
+          <td>${escapeHtml(item.shareWillingness)}</td>
+          <td>
+            <details>
+              <summary>查看</summary>
+              <pre>${escapeHtml(item.instructorSummary)}</pre>
+            </details>
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+
+  submissionList.innerHTML = `
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>姓名</th>
+            <th>部门</th>
+            <th>岗位</th>
+            <th>想改造的任务</th>
+            <th>频率</th>
+            <th>耗时</th>
+            <th>类型</th>
+            <th>痛点</th>
+            <th>输入材料</th>
+            <th>期望输出</th>
+            <th>完整度</th>
+            <th>潜力</th>
+            <th>分享</th>
+            <th>摘要</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
 }
 
 function applyFilters() {
@@ -215,9 +247,8 @@ async function loadSubmissions() {
     }
 
     submissions = Array.isArray(data.submissions) ? data.submissions : [];
-    document.getElementById("sourceLabel").textContent =
-      data.source === "webhook" ? "数据源：外部收集端点" : "数据源：本地备份";
-    document.getElementById("warningLabel").textContent = data.warning || "";
+    document.getElementById("sourceLabel").textContent = "数据源：后台问卷数据";
+    document.getElementById("warningLabel").textContent = "";
     updateFilters();
     applyFilters();
   } catch (error) {
@@ -249,7 +280,22 @@ function csvEscape(value) {
 }
 
 function downloadCsv() {
-  const headers = ["提交时间", "姓名", "部门", "岗位", "任务", "频率", "耗时", "任务类型", "痛点", "输入材料", "输出结果", "工作流潜力", "讲师摘要"];
+  const headers = [
+    "提交时间",
+    "姓名",
+    "部门",
+    "岗位",
+    "任务",
+    "频率",
+    "耗时",
+    "任务类型",
+    "痛点",
+    "输入材料",
+    "输出结果",
+    "完整度",
+    "工作流潜力",
+    "讲师摘要"
+  ];
   const rows = filteredSubmissions.map((item) => [
     item.submittedAt,
     item.name,
@@ -262,6 +308,7 @@ function downloadCsv() {
     text(item.painPoints),
     text(item.inputMaterials),
     text(item.outputTypes),
+    item.completeness,
     item.workflowPotential,
     item.instructorSummary
   ]);

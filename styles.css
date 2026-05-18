@@ -667,6 +667,64 @@ select:focus {
 .submission-list {
   display: grid;
   gap: 14px;
+  min-width: 0;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgba(28, 39, 49, 0.08);
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 1380px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.admin-table th,
+.admin-table td {
+  vertical-align: top;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.admin-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-muted);
+  color: #253238;
+  font-size: 0.84rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  color: #314149;
+  line-height: 1.55;
+}
+
+.admin-table tbody tr:hover {
+  background: #fbfcfd;
+}
+
+.admin-table strong,
+.admin-table small {
+  display: block;
+}
+
+.admin-table small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.admin-table .wide-cell {
+  min-width: 210px;
 }
 
 .empty-state {

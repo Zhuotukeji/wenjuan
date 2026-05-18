@@ -11,6 +11,7 @@ async function readJson(req) {
   if (req.body && typeof req.body === "object") {
     return req.body;
   }
+
   if (typeof req.body === "string") {
     return req.body ? JSON.parse(req.body) : {};
   }
@@ -21,74 +22,6 @@ async function readJson(req) {
   }
   const raw = Buffer.concat(chunks).toString("utf8");
   return raw ? JSON.parse(raw) : {};
-}
-
-async function forwardToWebhook(payload) {
-  const webhookUrl =
-    process.env.QUESTIONNAIRE_WEBHOOK_URL ||
-    process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
-    process.env.FORM_WEBHOOK_URL;
-
-  if (!webhookUrl) {
-    return {
-      configured: false,
-      ok: true
-    };
-  }
-
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    throw new Error(`Webhook failed with status ${response.status}`);
-  }
-
-  return {
-    configured: true,
-    ok: true
-  };
-}
-
-async function tryForwardToWebhook(payload) {
-  try {
-    const result = await forwardToWebhook(payload);
-    return {
-      ...result,
-      error: ""
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      configured: true,
-      ok: false,
-      error: error instanceof Error ? error.message : "Webhook failed"
-    };
-  }
-}
-
-async function tryStoreLocally(payload) {
-  try {
-    const result = await appendSubmission(payload);
-    return {
-      ok: true,
-      count: result.count,
-      path: result.path,
-      error: ""
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      ok: false,
-      count: 0,
-      path: "",
-      error: error instanceof Error ? error.message : "Local store failed"
-    };
-  }
 }
 
 async function handlePayload(body, headers = {}) {
@@ -121,27 +54,34 @@ async function handlePayload(body, headers = {}) {
     userAgent: headers["user-agent"] || headers["User-Agent"] || ""
   };
 
-  const localStore = await tryStoreLocally(payload);
-  const forwarding = await tryForwardToWebhook(payload);
-  const stored = localStore.ok || forwarding.ok;
-  const warnings = [localStore.error, forwarding.error].filter(Boolean);
-
-  return {
-    status: stored ? 200 : 500,
-    body: {
-      ok: stored,
-      submissionId,
-      stored,
-      localStored: localStore.ok,
-      webhookStored: forwarding.configured && forwarding.ok,
-      warnings,
-      message: stored
-        ? forwarding.configured && forwarding.ok
-          ? "提交成功，问卷已收集。"
-          : "提交成功，已写入本地备份。当前未配置或未连通外部收集端点。"
-        : "提交失败，未能写入任何收集端点，请联系培训组织者。"
-    }
-  };
+  try {
+    const store = await appendSubmission(payload);
+    return {
+      status: 200,
+      body: {
+        ok: true,
+        submissionId,
+        stored: true,
+        backendStored: true,
+        localStored: true,
+        count: store.count,
+        message: "提交成功，已写入后台。"
+      }
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: 500,
+      body: {
+        ok: false,
+        submissionId,
+        stored: false,
+        backendStored: false,
+        localStored: false,
+        message: "提交失败，后台暂时无法写入，请联系培训组织者。"
+      }
+    };
+  }
 }
 
 module.exports = async function handler(req, res) {

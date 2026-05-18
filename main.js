@@ -287,11 +287,9 @@ function showResult(data) {
   resultView.hidden = false;
   document.getElementById("resultMessage").textContent = data.message;
   document.getElementById("submissionId").textContent = data.submissionId;
-  document.getElementById("storageStatus").textContent = data.webhookStored
-    ? "已写入外部收集端点"
-    : data.localStored
-      ? "已写入本地备份"
-      : "未写入";
+  document.getElementById("storageStatus").textContent = data.backendStored || data.localStored
+    ? "已写入后台"
+    : "未写入";
   document.getElementById("summaryText").textContent = finalSummary;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
