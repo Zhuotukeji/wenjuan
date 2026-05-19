@@ -8,7 +8,7 @@
 真实任务 -> 输入材料 -> 处理步骤 -> 输出标准 -> 人工检查点 -> 小系统雏形
 ```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FZhuotukeji%2Fwenjuan&env=ADMIN_TOKEN,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN&envDescription=ADMIN_TOKEN%20is%20the%20admin%20password.%20Create%20an%20Upstash%20Redis%20database%20from%20Vercel%20Marketplace%20and%20copy%20the%20REST%20URL%20and%20token.&project-name=ai-workflow-survey&repository-name=wenjuan)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FZhuotukeji%2Fwenjuan&env=ADMIN_TOKEN,KV_REST_API_URL,KV_REST_API_TOKEN&envDescription=ADMIN_TOKEN%20is%20the%20admin%20password.%20KV_REST_API_URL%20and%20KV_REST_API_TOKEN%20come%20from%20Vercel%20KV%20or%20Upstash%20Redis%20integration.&project-name=ai-workflow-survey&repository-name=wenjuan)
 
 ## 功能
 
@@ -39,15 +39,22 @@
 
 ```text
 ADMIN_TOKEN=你自己设置的管理口令
-UPSTASH_REDIS_REST_URL=你的 Upstash Redis REST URL
-UPSTASH_REDIS_REST_TOKEN=你的 Upstash Redis REST Token
+KV_REST_API_URL=Vercel KV / Upstash 自动生成的 REST API URL
+KV_REST_API_TOKEN=Vercel KV / Upstash 自动生成的 REST API Token
 ```
 
-也兼容 Vercel KV 风格变量名：
+也兼容 Upstash 风格变量名：
 
 ```text
-KV_REST_API_URL
-KV_REST_API_TOKEN
+UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN
+```
+
+如果 Vercel 只自动注入了 Redis 连接串，也可以使用：
+
+```text
+KV_URL
+REDIS_URL
 ```
 
 如果没有配置 Redis，首页仍然可以访问，但提交问卷时会显示“后台存储未配置”的错误提示。
