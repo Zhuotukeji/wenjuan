@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { appendSubmission } = require("../../../../lib/submission-store");
+const { appendSubmission } = require("../../../lib/submission-store");
 
 const requiredFields = ["name", "department", "role", "taskTitle"];
 

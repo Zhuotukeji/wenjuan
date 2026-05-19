@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { getJsonToken, verifyAdminToken } = require("../../../../../lib/admin-auth");
+const { getJsonToken, verifyAdminToken } = require("../../../../lib/admin-auth");
 
 function json(body, status = 200) {
   return Response.json(body, { status });
