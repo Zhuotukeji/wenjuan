@@ -27,6 +27,14 @@
 3. 配置环境变量。
 4. 重新部署项目。
 
+如果部署后访问首页出现 `404: NOT_FOUND`，请检查 Vercel 项目设置：
+
+- `Framework Preset` 应为 `Next.js`。
+- `Root Directory` 留空，指向仓库根目录。
+- `Output Directory` 留空，不要填 `public`、`dist` 或 `.next`。
+- `Build Command` 使用 `npm run build`，或留空让 Vercel 自动读取。
+- 修改设置后，到 `Deployments` 里对最新提交重新 `Redeploy`。
+
 必填环境变量：
 
 ```text
