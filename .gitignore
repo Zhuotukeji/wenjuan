@@ -3,7 +3,6 @@ node_modules
 .env
 .env.local
 .vercel
-data/submissions.json
 out
 dist
 npm-debug.log*

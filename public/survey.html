@@ -9,6 +9,34 @@
   </head>
   <body>
     <main class="shell">
+      <header class="topbar" aria-label="页面导航">
+        <a class="brand-link" href="/">AI 工作流课前问卷</a>
+        <button type="button" class="secondary-button login-trigger" id="loginButton">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><path d="m10 17 5-5-5-5" /><path d="M15 12H3" /></svg>
+          登录
+        </button>
+      </header>
+
+      <div class="modal-backdrop" id="loginModal" hidden>
+        <section class="login-dialog" aria-labelledby="login-title" role="dialog" aria-modal="true">
+          <button type="button" class="icon-button" id="closeLoginButton" aria-label="关闭登录框">
+            <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          </button>
+          <p class="eyebrow">管理后台</p>
+          <h2 id="login-title">登录查看问卷答案</h2>
+          <p>请输入管理口令，登录后可查看所有提交的答案表格。</p>
+          <label class="field">
+            <span>管理口令</span>
+            <input id="loginToken" type="password" autocomplete="current-password" placeholder="请输入 ADMIN_TOKEN" />
+          </label>
+          <p class="error-message" id="loginError" hidden></p>
+          <button type="button" class="primary-button" id="confirmLoginButton">
+            登录后台
+            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+        </section>
+      </div>
+
       <section class="hero-band" id="formView" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">AI 工作流实战课 · 课前调研</p>

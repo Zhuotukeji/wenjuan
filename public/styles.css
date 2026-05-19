@@ -69,6 +69,80 @@ svg {
   padding: 32px 0 48px;
 }
 
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 18px;
+}
+
+.brand-link {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.login-trigger {
+  flex: 0 0 auto;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(23, 33, 38, 0.48);
+}
+
+.login-dialog,
+.login-gate {
+  position: relative;
+  width: min(460px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.login-dialog {
+  padding: 28px;
+}
+
+.login-dialog h2,
+.login-gate h2 {
+  margin-bottom: 8px;
+}
+
+.login-dialog p:not(.eyebrow),
+.login-gate p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.icon-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--muted);
+}
+
+.icon-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
 .hero-band {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -551,6 +625,17 @@ select:focus {
   text-decoration: none;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-gate {
+  margin: 28px auto 0;
+  padding: 28px;
+}
+
 .admin-toolbar,
 .admin-actions,
 .admin-stats article,
@@ -565,7 +650,7 @@ select:focus {
 
 .admin-toolbar {
   display: grid;
-  grid-template-columns: minmax(180px, 220px) minmax(220px, 1fr) minmax(160px, 190px) minmax(160px, 190px) auto;
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 190px) minmax(160px, 190px) auto;
   gap: 14px;
   align-items: end;
   padding: 18px;

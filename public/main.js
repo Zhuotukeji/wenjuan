@@ -1,4 +1,6 @@
 const storageKey = "ai-workflow-preclass-survey";
+const adminTokenStorageKey = "ai-workflow-admin-token";
+const adminSessionStorageKey = "ai-workflow-admin-session";
 
 const steps = [
   ["个人背景", "确认岗位和 AI 使用基础"],
@@ -50,6 +52,12 @@ const prevButton = document.getElementById("prevButton");
 const nextButton = document.getElementById("nextButton");
 const submitButton = document.getElementById("submitButton");
 const errorMessage = document.getElementById("errorMessage");
+const loginButton = document.getElementById("loginButton");
+const loginModal = document.getElementById("loginModal");
+const closeLoginButton = document.getElementById("closeLoginButton");
+const confirmLoginButton = document.getElementById("confirmLoginButton");
+const loginToken = document.getElementById("loginToken");
+const loginError = document.getElementById("loginError");
 
 function loadState() {
   const saved = window.localStorage.getItem(storageKey);
@@ -164,10 +172,71 @@ function clearError() {
   errorMessage.hidden = true;
 }
 
+function showLoginError(message) {
+  loginError.textContent = message;
+  loginError.hidden = false;
+}
+
+function clearLoginError() {
+  loginError.textContent = "";
+  loginError.hidden = true;
+}
+
+function openLoginModal() {
+  clearLoginError();
+  loginModal.hidden = false;
+  loginToken.value = window.sessionStorage.getItem(adminTokenStorageKey) || "";
+  window.setTimeout(() => loginToken.focus(), 0);
+}
+
+function closeLoginModal() {
+  loginModal.hidden = true;
+  clearLoginError();
+}
+
+function setLoginButtonText(label) {
+  const textNode = [...confirmLoginButton.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
+  if (textNode) {
+    textNode.textContent = ` ${label} `;
+  }
+}
+
 function setSubmitButtonText(label) {
   const textNode = [...submitButton.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
   if (textNode) {
     textNode.textContent = ` ${label} `;
+  }
+}
+
+async function loginToAdmin() {
+  clearLoginError();
+  const token = loginToken.value.trim();
+
+  confirmLoginButton.disabled = true;
+  setLoginButtonText("登录中");
+
+  try {
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ token })
+    });
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.message || "登录失败，请检查管理口令。");
+    }
+
+    window.sessionStorage.setItem(adminTokenStorageKey, token);
+    window.sessionStorage.setItem(adminSessionStorageKey, "1");
+    window.location.href = "/admin";
+  } catch (error) {
+    showLoginError(error.message || "登录失败，请稍后重试。");
+  } finally {
+    confirmLoginButton.disabled = false;
+    setLoginButtonText("登录后台");
   }
 }
 
@@ -287,7 +356,7 @@ function showResult(data) {
   resultView.hidden = false;
   document.getElementById("resultMessage").textContent = data.message;
   document.getElementById("submissionId").textContent = data.submissionId;
-  document.getElementById("storageStatus").textContent = data.backendStored || data.localStored
+  document.getElementById("storageStatus").textContent = data.backendStored
     ? "已写入后台"
     : "未写入";
   document.getElementById("summaryText").textContent = finalSummary;
@@ -357,3 +426,16 @@ surveyForm.addEventListener("submit", submitSurvey);
 document.getElementById("copyButton").addEventListener("click", copySummary);
 document.getElementById("downloadButton").addEventListener("click", downloadSummary);
 document.getElementById("restartButton").addEventListener("click", restart);
+loginButton.addEventListener("click", openLoginModal);
+closeLoginButton.addEventListener("click", closeLoginModal);
+confirmLoginButton.addEventListener("click", loginToAdmin);
+loginToken.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    loginToAdmin();
+  }
+});
+loginModal.addEventListener("click", (event) => {
+  if (event.target === loginModal) {
+    closeLoginModal();
+  }
+});

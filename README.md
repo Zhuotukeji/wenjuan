@@ -1,6 +1,6 @@
 # AI 工作流课前问卷
 
-这是一个零依赖、可部署到 Vercel 的课前问卷系统，用来收集综合部、商务同事在 AI 培训前的真实工作场景。
+这是一个可一键部署到 Vercel 的课前问卷系统，用来收集综合部、商务同事在 AI 培训前的真实工作场景。
 
 问卷围绕一条工作流展开：
 
@@ -8,10 +8,47 @@
 真实任务 -> 输入材料 -> 处理步骤 -> 输出标准 -> 人工检查点 -> 小系统雏形
 ```
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FZhuotukeji%2Fwenjuan&env=ADMIN_TOKEN,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN&envDescription=ADMIN_TOKEN%20is%20the%20admin%20password.%20Create%20an%20Upstash%20Redis%20database%20from%20Vercel%20Marketplace%20and%20copy%20the%20REST%20URL%20and%20token.&project-name=ai-workflow-survey&repository-name=wenjuan)
+
+## 功能
+
+- 访问 `/` 直接进入问卷页面。
+- 首页右上角“登录”可输入管理口令进入后台。
+- 访问 `/admin` 时，未登录会先显示口令登录页。
+- 后台用表格查看所有提交答案。
+- 支持关键词、部门、任务类型筛选。
+- 支持复制讲师摘要、导出 CSV、导出 JSON。
+- 数据存储使用 Upstash Redis，不使用 Google Apps Script、Google Sheet 或 Webhook。
+
+## Vercel 部署
+
+1. 在 Vercel 中导入 GitHub 仓库。
+2. 在 Vercel Marketplace 创建或绑定 Upstash Redis。
+3. 配置环境变量。
+4. 重新部署项目。
+
+必填环境变量：
+
+```text
+ADMIN_TOKEN=你自己设置的管理口令
+UPSTASH_REDIS_REST_URL=你的 Upstash Redis REST URL
+UPSTASH_REDIS_REST_TOKEN=你的 Upstash Redis REST Token
+```
+
+也兼容 Vercel KV 风格变量名：
+
+```text
+KV_REST_API_URL
+KV_REST_API_TOKEN
+```
+
+如果没有配置 Redis，首页仍然可以访问，但提交问卷时会显示“后台存储未配置”的错误提示。
+
 ## 本地运行
 
 ```bash
-node local-server.mjs
+npm install
+npm run dev
 ```
 
 打开：
@@ -20,52 +57,24 @@ node local-server.mjs
 http://localhost:3000
 ```
 
-管理后台：
+本地调试后台时，如果没有设置 `ADMIN_TOKEN`，可以空口令进入；生产环境必须设置 `ADMIN_TOKEN`。
+
+## 页面入口
 
 ```text
-http://localhost:3000/admin.html
+/       问卷首页
+/admin  管理后台
 ```
 
-## 部署到 Vercel
+## 数据结构
 
-1. 把本目录提交到 GitHub 仓库。
-2. 在 Vercel 中选择 `New Project`，导入该仓库。
-3. Framework Preset 选择 `Other` 或保持 Vercel 自动识别。
-4. Build Command 留空。
-5. Output Directory 留空。
-6. 可选配置 `ADMIN_TOKEN` 作为后台管理口令。
+Redis 使用一个 List 保存提交：
 
 ```text
-ADMIN_TOKEN=你自己设置的管理口令
+ai-workflow-survey:submissions
 ```
 
-## 管理后台
-
-部署后打开：
-
-```text
-https://你的域名/admin.html
-```
-
-后台支持：
-
-- 用表格查看所有问卷提交
-- 按关键词、部门、任务类型筛选
-- 查看提交总数、平均完整度、平均工作流潜力
-- 查看部门分布和高频痛点
-- 复制讲师摘要
-- 导出 CSV / JSON
-
-## 数据说明
-
-当前版本不使用 Google Apps Script，也不依赖 Google Sheet。
-
-提交后，数据会写入项目后台的 JSON 存储：
-
-- 本地开发时写入 `data/submissions.json`
-- Vercel 上写入运行时可写目录
-
-注意：Vercel Serverless 的本地文件存储不适合作为长期数据库，适合轻量演示、短期收集或内部小范围使用。若后续要长期稳定收集大量问卷，建议再接入正式数据库，比如 Vercel Postgres、Supabase、Neon、Upstash Redis 等。
+提交时使用 `LPUSH` 写入完整问卷 JSON，后台读取时使用 `LRANGE 0 -1`，最新提交显示在最前面。
 
 ## 问卷设计重点
 
